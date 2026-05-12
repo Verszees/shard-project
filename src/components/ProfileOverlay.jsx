@@ -23,12 +23,13 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 20, stiffness: 150 }}
+            style={{ paddingTop: 'max(1.5rem, var(--app-safe-area-top))' }}
             className="absolute right-0 top-0 h-full w-full max-w-[380px] z-[70]
-                       bg-gradient-to-b from-[#12141c] to-[#08090d] border-l border-white/10 p-8
+                       bg-gradient-to-b from-[#12141c] to-[#08090d] border-l border-white/10 px-8 pb-8
                        flex flex-col gap-6 shadow-2xl"
           >
             {/* 1. ШАПКА: Юзернейм и Уровень */}
-            <div className="relative pt-4">
+            <div className="relative pt-1">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 p-[2px] shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                   <div className="w-full h-full rounded-[22px] bg-[#0d0f14] flex items-center justify-center overflow-hidden">
@@ -100,7 +101,13 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
               </div>
             </div>
 
-            <button onClick={onClose} className="absolute top-8 right-8 text-white/20 hover:text-white transition-colors uppercase text-[10px] font-black tracking-widest italic">Close [x]</button>
+            <button
+              onClick={onClose}
+              style={{ top: 'max(1.25rem, var(--app-safe-area-top))', right: '1.5rem' }}
+              className="absolute text-white/20 hover:text-white transition-colors uppercase text-[10px] font-black tracking-widest italic"
+            >
+              Close [x]
+            </button>
           </motion.div>
         </>
       )}

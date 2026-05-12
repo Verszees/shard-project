@@ -55,11 +55,14 @@ export function initTelegramWebApp() {
       top = Math.max(top, Number.isFinite(device) ? device : 0);
     }
 
-    const pad = Math.round(top + 16);
-    const padPx = `${Math.max(pad, 12)}px`;
-    root.style.setProperty('--app-safe-area-top', padPx);
-    root.style.setProperty('--app-header-pad-top', padPx);
-    root.style.setProperty('--app-header-slot-min', `${Math.max(pad + 52, 100)}px`);
+    const safePad = Math.round(top + 16);
+    const safePx = `${Math.max(safePad, 12)}px`;
+    // Чуть ниже только верхние кнопки (Connect / Links), остальные экраны — по --app-safe-area-top
+    const headerExtra = inMiniApp ? 14 : 8;
+    const headerPx = `${Math.max(safePad + headerExtra, 12)}px`;
+    root.style.setProperty('--app-safe-area-top', safePx);
+    root.style.setProperty('--app-header-pad-top', headerPx);
+    root.style.setProperty('--app-header-slot-min', `${Math.max(safePad + headerExtra + 52, 108)}px`);
   };
 
   applyInsets();

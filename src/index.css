@@ -13,6 +13,7 @@
 /* Пока JS не успел — в мини‑апе не прилипаем к самому верху */
 html.tg-mini-app {
   --app-safe-area-top: 64px;
+  --app-header-pad-top: 78px;
 }
 
 @layer base {
