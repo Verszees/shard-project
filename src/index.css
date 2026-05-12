@@ -5,6 +5,11 @@
   --radius-3xl: 24px;
 }
 
+:root {
+  /* Переопределяется в initTelegramWebApp.js; запас под «Закрыть» и статус-бар */
+  --app-safe-area-top: max(12px, env(safe-area-inset-top, 0px));
+}
+
 @layer base {
   /* Глобальная защита для всех изображений */
   img {

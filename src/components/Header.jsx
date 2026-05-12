@@ -53,7 +53,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[100] px-4 pt-[var(--app-header-pad-top,1rem)] flex justify-between items-start pointer-events-none">
+    <header className="fixed top-0 left-0 right-0 z-[100] px-4 pt-[var(--app-header-pad-top,var(--app-safe-area-top,1rem))] flex justify-between items-start pointer-events-none">
 
       {/* CONNECT BUTTON */}
       <motion.button

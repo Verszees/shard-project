@@ -1,36 +1,48 @@
 /**
- * Выставляет отступы под шапку Telegram / safe area и вызывает WebApp.ready().
- * Без этого fixed-хедер и 3D-сцена залезают под кнопку «Закрыть» и статус-бар.
+ * Отступ сверху под панель Telegram («Закрыть», меню) + чёлка/status bar.
+ * Пишет --app-safe-area-top и --app-header-* на :root для хедера и оверлеев.
  */
 export function initTelegramWebApp() {
   const root = document.documentElement;
   const tw = window.Telegram?.WebApp;
-  const inTelegramClient = typeof navigator !== 'undefined' && /Telegram/i.test(navigator.userAgent);
+  const inTelegramClient =
+    typeof navigator !== 'undefined' && /Telegram/i.test(navigator.userAgent);
 
   const applyInsets = () => {
     if (!tw) {
-      root.style.setProperty('--app-header-pad-top', 'max(12px, env(safe-area-inset-top, 0px))');
-      root.style.setProperty('--app-header-slot-min', 'calc(var(--app-header-pad-top) + 3rem)');
+      root.style.setProperty(
+        '--app-safe-area-top',
+        'max(12px, env(safe-area-inset-top, 0px))',
+      );
+      root.style.setProperty('--app-header-pad-top', 'var(--app-safe-area-top)');
+      root.style.setProperty(
+        '--app-header-slot-min',
+        'calc(var(--app-safe-area-top) + 3rem)',
+      );
       return;
     }
 
     tw.ready?.();
     if (inTelegramClient) tw.expand?.();
 
-    let top = Number(tw.contentSafeAreaInset?.top);
-    const deviceTop = Number(tw.safeAreaInset?.top);
+    const content = Number(tw.contentSafeAreaInset?.top);
+    const device = Number(tw.safeAreaInset?.top);
+    let top = 0;
+    if (Number.isFinite(content) && content > 0) top = content;
+    if (Number.isFinite(device) && device > 0) top = Math.max(top, device);
 
-    if (!Number.isFinite(top) || top < 1) {
-      if (inTelegramClient) {
-        top = Number.isFinite(deviceTop) && deviceTop > 0 ? Math.max(deviceTop, 44) : 52;
-      } else {
-        top = Number.isFinite(deviceTop) && deviceTop > 0 ? deviceTop : 0;
-      }
+    if (inTelegramClient) {
+      // На iOS иногда приходит маленькое значение — всё равно оставляем место под шапку мини‑апа
+      top = Math.max(top, 56);
+    } else {
+      top = Math.max(top, Number.isFinite(device) ? device : 0);
     }
 
-    const pad = Math.round(top + 8);
-    root.style.setProperty('--app-header-pad-top', `${Math.max(pad, 12)}px`);
-    root.style.setProperty('--app-header-slot-min', `${Math.max(pad + 50, 88)}px`);
+    const pad = Math.round(top + 14);
+    const padPx = `${Math.max(pad, 12)}px`;
+    root.style.setProperty('--app-safe-area-top', padPx);
+    root.style.setProperty('--app-header-pad-top', padPx);
+    root.style.setProperty('--app-header-slot-min', `${Math.max(pad + 50, 96)}px`);
   };
 
   applyInsets();
@@ -44,4 +56,5 @@ export function initTelegramWebApp() {
 
   requestAnimationFrame(applyInsets);
   setTimeout(applyInsets, 120);
+  setTimeout(applyInsets, 400);
 }

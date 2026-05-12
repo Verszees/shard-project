@@ -26,7 +26,7 @@ const GamesOverlay = () => {
 
   return (
     <motion.div
-      className="w-full px-5 pt-8 space-y-4 pb-24"
+      className="w-full px-5 space-y-4 pb-24 pt-[max(1.75rem,var(--app-safe-area-top))]"
       variants={containerVariants}
       initial="hidden"
       animate={videoLoaded ? "visible" : "hidden"}

@@ -5,7 +5,7 @@ const HubOverlay = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('missions');
 
   return (
-    <div className="flex flex-col items-center px-5 pt-10 pb-32">
+    <div className="flex flex-col items-center px-5 pb-32 pt-[max(2.5rem,var(--app-safe-area-top))]">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}

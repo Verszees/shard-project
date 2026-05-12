@@ -20,7 +20,7 @@ const FriendsOverlay = ({ onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-black text-white pt-16 flex flex-col overflow-hidden"
+      className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden pt-[max(4rem,var(--app-safe-area-top))]"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -35,7 +35,7 @@ const FriendsOverlay = ({ onClose }) => {
       <motion.button
         variants={itemVariants}
         onClick={onClose}
-        className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform"
+        className="absolute right-6 top-[max(1rem,var(--app-safe-area-top))] w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform"
       >
         ×
       </motion.button>

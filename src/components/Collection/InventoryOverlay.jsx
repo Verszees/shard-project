@@ -20,7 +20,7 @@ const InventoryOverlay = ({ isOpen, onClose }) => {
           </div>
 
           {/* ХЕДЕР */}
-          <header className="relative z-10 px-6 pt-10 pb-4 flex items-center">
+          <header className="relative z-10 px-6 pb-4 flex items-center pt-[max(2.5rem,var(--app-safe-area-top))]">
             <button
               onClick={onClose}
               className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center active:scale-90 transition-all"

@@ -61,7 +61,7 @@ export default function App() {
                 <>
                   <div
                     className="w-full relative z-50 shrink-0"
-                    style={{ minHeight: 'var(--app-header-slot-min, 5.5rem)' }}
+                    style={{ minHeight: 'var(--app-header-slot-min, calc(var(--app-safe-area-top) + 3rem))' }}
                   >
                     <AnimatePresence>
                       {/* Скрываем Header (Links/Connect) если открыт инвентарь */}
