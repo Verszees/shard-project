@@ -1,9 +1,20 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTonWallet, useTonConnectUI } from '@tonconnect/ui-react';
+import { shortenTonAddress } from '../utils/shortenTonAddress.js';
 
 const Header = () => {
   const [isLinksOpen, setIsLinksOpen] = useState(false);
   const menuRef = useRef(null);
+  const wallet = useTonWallet();
+  const [tonConnectUI] = useTonConnectUI();
+
+  const walletAddress = wallet?.account?.address;
+  const connectLabel = walletAddress ? shortenTonAddress(walletAddress, 5) : 'Connect';
+
+  const handleWalletClick = () => {
+    void tonConnectUI.openModal();
+  };
 
   const socialLinks = [
     {
@@ -60,17 +71,21 @@ const Header = () => {
       }}
     >
 
-      {/* CONNECT BUTTON */}
+      {/* CONNECT / WALLET (TON Connect) */}
       <motion.button
+        type="button"
+        onClick={handleWalletClick}
         whileTap={{ scale: 0.97 }}
-        className="pointer-events-auto flex items-center gap-2.5 px-4 py-2 bg-[#1a1a1a] border border-white/10 rounded-full shadow-lg"
+        className="pointer-events-auto flex max-w-[min(52vw,220px)] items-center gap-2.5 px-4 py-2 bg-[#1a1a1a] border border-white/10 rounded-full shadow-lg"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-90">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-90">
           <path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1" />
           <path d="M16 12h5" />
           <circle cx="18" cy="12" r="1" fill="white" />
         </svg>
-        <span className="text-[11px] font-black italic uppercase tracking-wider text-white">Connect</span>
+        <span className="min-w-0 truncate text-[11px] font-bold text-white tracking-wide">
+          {connectLabel}
+        </span>
       </motion.button>
 
       {/* LINKS DROPDOWN */}
