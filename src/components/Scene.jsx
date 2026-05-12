@@ -20,7 +20,7 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) 
 
     // Твои базовые параметры
     const baseZ = -1.2;
-    const homeY = 0.5 + (scrollY.current * 0.001);
+    const homeY = 0.38 + (scrollY.current * 0.001);
 
     // Определяем цель по Y (фиксим обрезку и центрируем в хабе)
     let targetY;
@@ -67,7 +67,7 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) 
         </mesh>
 
         {/* ТВОИ СФЕРЫ С РОДНЫМ СКЕЙЛОМ */}
-        <ShardSphere position={[0, 0, 0]} scale={3.5} />
+        <ShardSphere position={[0, 0, 0]} scale={3.05} />
       </Float>
     </group>
   );
@@ -79,7 +79,7 @@ const Scene = memo(({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) => 
       <Canvas
         shadows={false}
         dpr={[1, 2]}
-        camera={{ position: [0, 0.5, 6], fov: 40 }}
+        camera={{ position: [0, 0.42, 6.25], fov: 40 }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         onCreated={({ camera }) => camera.lookAt(0, 0, 0)}
         style={{ overflow: 'visible' }}

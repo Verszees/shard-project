@@ -59,7 +59,10 @@ export default function App() {
             >
               {!isProfileOpen && (
                 <>
-                  <div className="w-full h-0 relative z-50">
+                  <div
+                    className="w-full relative z-50 shrink-0"
+                    style={{ minHeight: 'var(--app-header-slot-min, 5.5rem)' }}
+                  >
                     <AnimatePresence>
                       {/* Скрываем Header (Links/Connect) если открыт инвентарь */}
                       {showContent && !isInventoryOpen && (
