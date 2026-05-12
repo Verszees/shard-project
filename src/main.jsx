@@ -7,7 +7,7 @@ import { initTelegramWebApp } from './initTelegramWebApp.js'
 
 initTelegramWebApp()
 
-const manifestUrl = `${window.location.origin}/tonconnect-manifest.json`
+const manifestUrl = `${window.location.origin}/tonconnect-manifest.json?v=777`;
 const twaReturnUrl = import.meta.env.VITE_TWA_RETURN_URL
 
 createRoot(document.getElementById('root')).render(
