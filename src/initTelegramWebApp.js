@@ -58,7 +58,7 @@ export function initTelegramWebApp() {
     const safePad = Math.round(top + 16);
     const safePx = `${Math.max(safePad, 12)}px`;
     // Чуть ниже только верхние кнопки (Connect / Links), остальные экраны — по --app-safe-area-top
-    const headerExtra = inMiniApp ? 14 : 8;
+    const headerExtra = inMiniApp ? 24 : 14;
     const headerPx = `${Math.max(safePad + headerExtra, 12)}px`;
     root.style.setProperty('--app-safe-area-top', safePx);
     root.style.setProperty('--app-header-pad-top', headerPx);

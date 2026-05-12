@@ -23,9 +23,12 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 20, stiffness: 150 }}
-            style={{ paddingTop: 'max(1.5rem, var(--app-safe-area-top))' }}
+            style={{
+              paddingTop: 'max(1.5rem, var(--app-safe-area-top))',
+              paddingBottom: 'max(2.75rem, calc(env(safe-area-inset-bottom, 0px) + 2rem))',
+            }}
             className="absolute right-0 top-0 h-full w-full max-w-[380px] z-[70]
-                       bg-gradient-to-b from-[#12141c] to-[#08090d] border-l border-white/10 px-8 pb-8
+                       bg-gradient-to-b from-[#12141c] to-[#08090d] border-l border-white/10 px-8
                        flex flex-col gap-6 shadow-2xl"
           >
             {/* 1. ШАПКА: Юзернейм и Уровень */}
@@ -87,7 +90,7 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
             </div>
 
             {/* 4. ЗАМЕНА КАСТОМИЗАЦИИ: Daily Quests */}
-            <div className="mt-auto pb-6">
+            <div className="mt-auto pb-10">
               <div className="p-5 rounded-[32px] bg-blue-500/5 border border-blue-500/20">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">Daily Quest</h4>
