@@ -1,9 +1,13 @@
 import process from 'node:process';
 
-/**
- * Serves /tonconnect-manifest.json with url/iconUrl matching the current host (dev + ngrok).
- * At build time emits dist/tonconnect-manifest.json using VITE_APP_ORIGIN, Netlify URL, or a placeholder.
- */
+/** Absolute icon URL for TON Connect / Telegram Wallet (HTTPS, publicly reachable). */
+function resolveIconUrl(originOrBase, env) {
+  const override = (env.VITE_TONCONNECT_ICON_URL || '').trim();
+  if (override) return override;
+  const base = originOrBase.replace(/\/$/, '');
+  return `${base}/TONawatarka.jpg`;
+}
+
 export function tonconnectManifestPlugin() {
   const name = 'Shard Project';
   /** @type {Record<string, string>} */
@@ -27,10 +31,11 @@ export function tonconnectManifestPlugin() {
         const body = JSON.stringify({
           url: origin,
           name,
-          iconUrl: `${origin}/favicon.svg`,
+          iconUrl: resolveIconUrl(origin, env),
         });
 
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.statusCode = 200;
         res.end(body);
       });
@@ -40,13 +45,20 @@ export function tonconnectManifestPlugin() {
       const fromEnv = (env.VITE_APP_ORIGIN || '').trim();
       const base = (fromEnv || fromNetlify || 'https://example.com').replace(/\/$/, '');
 
+      if (base === 'https://example.com') {
+        this.warn(
+          '[tonconnect-manifest] Set VITE_APP_ORIGIN to your real HTTPS mini app origin, ' +
+            'otherwise iconUrl in tonconnect-manifest.json points at example.com and the wallet avatar will break.',
+        );
+      }
+
       this.emitFile({
         type: 'asset',
         fileName: 'tonconnect-manifest.json',
         source: JSON.stringify({
           url: base,
           name,
-          iconUrl: `${base}/favicon.svg`,
+          iconUrl: resolveIconUrl(base, env),
         }),
       });
     },
