@@ -1,0 +1,112 @@
+.oracle-card-hero {
+  width: 100%;
+  height: 200px;
+  background-color: #000; /* Только чистый черный фон */
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.oracle-visual-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.oracle-main-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 60% center;
+  opacity: 1;
+  display: block;
+}
+
+.oracle-overlay-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(90deg,
+  rgba(0,0,0,0.85) 0%,
+  rgba(0,0,0,0.3) 35%,
+  transparent 65%
+  );
+  pointer-events: none;
+}
+
+.oracle-content-layer {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.oracle-main-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.oracle-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #3b82f6;
+  font-size: 9px;
+  font-weight: 900;
+  margin-bottom: 2px;
+}
+
+.oracle-pulse-dot {
+  width: 5px;
+  height: 5px;
+  background: #3b82f6;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #3b82f6;
+  animation: pulse 2s infinite;
+}
+
+.oracle-main-title {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 950;
+  font-style: italic;
+  line-height: 0.85;
+  margin: 0;
+}
+
+.oracle-event-tag {
+  color: #000;
+  background: #fff;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  display: inline-block;
+  font-style: italic;
+  width: fit-content;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (max-width: 380px) {
+  .oracle-main-title {
+    font-size: 26px;
+  }
+  .oracle-card-hero {
+    height: 180px;
+  }
+}

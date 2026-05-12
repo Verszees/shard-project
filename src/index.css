@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-shard-blue: #007AFF;
+  --radius-3xl: 24px;
+}
+
+@layer base {
+  /* Глобальная защита для всех изображений */
+  img {
+    -webkit-user-drag: none; /* Запрет перетаскивания (Chrome, Safari) */
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+
+    -webkit-touch-callout: none; /* Запрет системного меню при долгом нажатии на iOS */
+    pointer-events: none; /* Клик проходит сквозь картинку (опционально, если не нужны клики по img) */
+  }
+
+  /* Запрет выделения текста во всем приложении (для нативности) */
+  body {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Стандарт */
+
+    /* Убираем синее выделение при клике на мобилках */
+    -webkit-tap-highlight-color: transparent;
+  }
+}
