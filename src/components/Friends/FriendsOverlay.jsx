@@ -20,7 +20,8 @@ const FriendsOverlay = ({ onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden pt-[max(4rem,var(--app-safe-area-top))]"
+      className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden"
+      style={{ paddingTop: 'var(--app-safe-area-top)' }}
       variants={containerVariants}
       initial="hidden"
       animate="visible"

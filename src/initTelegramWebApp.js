@@ -1,15 +1,27 @@
 /**
  * Отступ сверху под панель Telegram («Закрыть», меню) + чёлка/status bar.
- * Пишет --app-safe-area-top и --app-header-* на :root для хедера и оверлеев.
+ * ВАЖНО: в iOS WebView User-Agent часто БЕЗ слова "Telegram" — опираемся на WebApp.platform / initData.
  */
+function isTelegramMiniApp() {
+  const tw = window.Telegram?.WebApp;
+  if (!tw) return false;
+  const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+  if (/Telegram/i.test(ua)) return true;
+  const p = String(tw.platform || '');
+  if (p === 'ios' || p === 'android' || p === 'android_x') return true;
+  if (p === 'tdesktop' || p === 'macos' || p === 'weba' || p === 'webk') return true;
+  if (typeof tw.initData === 'string' && tw.initData.length > 0) return true;
+  return false;
+}
+
 export function initTelegramWebApp() {
   const root = document.documentElement;
   const tw = window.Telegram?.WebApp;
-  const inTelegramClient =
-    typeof navigator !== 'undefined' && /Telegram/i.test(navigator.userAgent);
+  const inMiniApp = isTelegramMiniApp();
 
   const applyInsets = () => {
     if (!tw) {
+      root.classList.remove('tg-mini-app');
       root.style.setProperty(
         '--app-safe-area-top',
         'max(12px, env(safe-area-inset-top, 0px))',
@@ -23,7 +35,12 @@ export function initTelegramWebApp() {
     }
 
     tw.ready?.();
-    if (inTelegramClient) tw.expand?.();
+    if (inMiniApp) {
+      root.classList.add('tg-mini-app');
+      tw.expand?.();
+    } else {
+      root.classList.remove('tg-mini-app');
+    }
 
     const content = Number(tw.contentSafeAreaInset?.top);
     const device = Number(tw.safeAreaInset?.top);
@@ -31,18 +48,18 @@ export function initTelegramWebApp() {
     if (Number.isFinite(content) && content > 0) top = content;
     if (Number.isFinite(device) && device > 0) top = Math.max(top, device);
 
-    if (inTelegramClient) {
-      // На iOS иногда приходит маленькое значение — всё равно оставляем место под шапку мини‑апа
-      top = Math.max(top, 56);
+    if (inMiniApp) {
+      // Место под строку «Закрыть» + статус; API иногда отдаёт 0
+      top = Math.max(top, 62);
     } else {
       top = Math.max(top, Number.isFinite(device) ? device : 0);
     }
 
-    const pad = Math.round(top + 14);
+    const pad = Math.round(top + 16);
     const padPx = `${Math.max(pad, 12)}px`;
     root.style.setProperty('--app-safe-area-top', padPx);
     root.style.setProperty('--app-header-pad-top', padPx);
-    root.style.setProperty('--app-header-slot-min', `${Math.max(pad + 50, 96)}px`);
+    root.style.setProperty('--app-header-slot-min', `${Math.max(pad + 52, 100)}px`);
   };
 
   applyInsets();

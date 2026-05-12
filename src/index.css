@@ -10,6 +10,11 @@
   --app-safe-area-top: max(12px, env(safe-area-inset-top, 0px));
 }
 
+/* Пока JS не успел — в мини‑апе не прилипаем к самому верху */
+html.tg-mini-app {
+  --app-safe-area-top: 64px;
+}
+
 @layer base {
   /* Глобальная защита для всех изображений */
   img {

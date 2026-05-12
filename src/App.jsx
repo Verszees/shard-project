@@ -132,6 +132,7 @@ export default function App() {
             <motion.div
               key="hub-screen"
               className="fixed inset-0 z-[100] overflow-y-auto pb-44 bg-black/70 backdrop-blur-xl"
+              style={{ paddingTop: 'var(--app-safe-area-top)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -151,6 +152,7 @@ export default function App() {
             <motion.div
               key="games-screen"
               className="fixed inset-0 z-[100] overflow-y-auto pb-44 bg-black/70 backdrop-blur-xl"
+              style={{ paddingTop: 'var(--app-safe-area-top)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
