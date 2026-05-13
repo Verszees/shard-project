@@ -12,7 +12,8 @@ import InventoryOverlay from './components/Collection/InventoryOverlay'; // Им
 
 import CollectionCard from './components/Cards/CollectionCard';
 import GameCard from './components/Cards/GameCard';
-import TasksCard from './components/Cards/TasksCard';
+import ShopCard from './components/Cards/ShopCard';
+import ShopOverlay from './components/Shop/ShopOverlay';
 import FriendsCard from './components/Cards/FriendsCard';
 import HubCard from './components/Cards/HubCard';
 
@@ -24,6 +25,7 @@ export default function App() {
   const [isGamesOpen, setIsGamesOpen] = useState(false);
   const [isFriendsOpen, setIsFriendsOpen] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
 
   useEffect(() => {
     const loadTimer = setTimeout(() => {
@@ -48,7 +50,7 @@ export default function App() {
       <div className="relative z-10 w-full flex flex-col items-center">
         <AnimatePresence mode="wait">
           {/* Рендерим главный экран только если НЕ открыты другие полноэкранные разделы */}
-          {!isHubOpen && !isGamesOpen && !isFriendsOpen && !isInventoryOpen ? (
+          {!isHubOpen && !isGamesOpen && !isFriendsOpen && !isInventoryOpen && !isShopOpen ? (
             <motion.div
               key="main-screen"
               className="w-full flex flex-col items-center"
@@ -106,7 +108,7 @@ export default function App() {
                           />
                           <GameCard onClick={() => setIsGamesOpen(true)} />
                           <div className="grid grid-cols-2 gap-3.5">
-                            <TasksCard onClick={() => setIsHubOpen(true)} />
+                            <ShopCard onClick={() => setIsShopOpen(true)} />
                             <FriendsCard onClick={() => setIsFriendsOpen(true)} />
                           </div>
                           <HubCard onClick={() => setIsHubOpen(true)} />
@@ -127,6 +129,17 @@ export default function App() {
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <FriendsOverlay onClose={() => setIsFriendsOpen(false)} />
+            </motion.div>
+          ) : isShopOpen ? (
+            <motion.div
+              key="shop-screen"
+              className="fixed inset-0 z-[100]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.28 }}
+            >
+              <ShopOverlay onClose={() => setIsShopOpen(false)} />
             </motion.div>
           ) : isHubOpen ? (
             <motion.div
@@ -172,9 +185,9 @@ export default function App() {
 
       {showContent && !isProfileOpen && !isInventoryOpen && (
         <Navbar
-          onHubClick={() => { setIsHubOpen(true); setIsGamesOpen(false); setIsFriendsOpen(false); }}
-          onHomeClick={() => { setIsHubOpen(false); setIsGamesOpen(false); setIsFriendsOpen(false); }}
-          onGamesClick={() => { setIsGamesOpen(true); setIsHubOpen(false); setIsFriendsOpen(false); }}
+          onHubClick={() => { setIsHubOpen(true); setIsGamesOpen(false); setIsFriendsOpen(false); setIsShopOpen(false); }}
+          onHomeClick={() => { setIsHubOpen(false); setIsGamesOpen(false); setIsFriendsOpen(false); setIsShopOpen(false); }}
+          onGamesClick={() => { setIsGamesOpen(true); setIsHubOpen(false); setIsFriendsOpen(false); setIsShopOpen(false); }}
           activeTab={isHubOpen ? 'hub' : isGamesOpen ? 'games' : isFriendsOpen ? 'friends' : 'home'}
           isInventoryOpen={isInventoryOpen}
         />
