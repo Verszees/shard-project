@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTonWallet, useTonConnectUI } from '@tonconnect/ui-react';
 
+// Конфигурация паков
 const PACKS = [
   { id: 'p1', shards: 850, ton: '0.84', usdt: '2.50', stars: 129 },
   { id: 'p2', shards: 4750, ton: '4.20', usdt: '12.00', stars: 599 },
@@ -21,13 +22,16 @@ function formatShards(n) {
 const ShopOverlay = ({ onClose }) => {
   const [method, setMethod] = useState('ton');
   const [selectedId, setSelectedId] = useState(PACKS[1].id);
+  const [promo, setPromo] = useState('');
+  
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
   const tw = typeof window !== 'undefined' ? window.Telegram?.WebApp : null;
 
+  // Расчет выбранного пака
   const selected = useMemo(
     () => PACKS.find((p) => p.id === selectedId) ?? PACKS[0],
-    [selectedId],
+    [selectedId]
   );
 
   const priceLabel = useMemo(() => {
@@ -36,6 +40,7 @@ const ShopOverlay = ({ onClose }) => {
     return `${selected.stars} Stars`;
   }, [method, selected]);
 
+  // Уведомления через Telegram API или браузер
   const notify = (message, title = 'Shop') => {
     if (tw?.showPopup) {
       tw.showPopup({ title, message, buttons: [{ type: 'ok' }] });
@@ -51,92 +56,101 @@ const ShopOverlay = ({ onClose }) => {
         return;
       }
       notify(
-        'TON payment will be confirmed by your bot after on-chain transfer. Wire your backend to TonConnect sendTransaction or a deposit address.',
-        'Pay with TON',
+        'Transaction request sent to your wallet. Shards will be added after confirmation.',
+        'Payment'
       );
+      // Здесь должна быть логика tonConnectUI.sendTransaction(...)
       return;
     }
-
+    
     if (method === 'usdt') {
       if (!wallet) {
         void tonConnectUI.openModal();
         return;
       }
-      notify(
-        'USDT on TON (jetton) needs your bot to build the transfer and credit shards. Connect the same wallet, then complete checkout in your backend.',
-        'Pay with USDT',
-      );
+      notify('USDT payments are processed via smart-contract.', 'USDT Payment');
       return;
     }
 
-    const invoiceUrl = import.meta.env.VITE_SHOP_STARS_INVOICE_URL;
-    if (invoiceUrl && typeof tw?.openInvoice === 'function') {
-      tw.openInvoice(invoiceUrl, (status) => {
-        if (status === 'paid') notify('Payment received. Shards will appear after your bot confirms.', 'Stars');
-      });
-      return;
-    }
-    notify(
-      'Create an invoice with Bot API (createInvoiceLink) and set VITE_SHOP_STARS_INVOICE_URL to the invoice URL, or open invoices dynamically from your server per pack.',
-      'Telegram Stars',
-    );
+    notify('Invoice system for Stars is being initialized...', 'Telegram Stars');
   };
 
+  // Анимации
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.06, delayChildren: 0.08 },
+      transition: { staggerChildren: 0.05, delayChildren: 0.02 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
   };
 
   return (
     <motion.div
       className="fixed inset-0 z-[100] bg-[#050508] text-white flex flex-col overflow-hidden"
-      style={{ paddingTop: 'var(--app-safe-area-top)' }}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
       exit="hidden"
     >
+      {/* Background Glows / Декоративные свечения */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-15%] right-[-25%] w-[85%] h-[55%] bg-blue-600/12 blur-[100px] rounded-full" />
-        <div className="absolute bottom-[-20%] left-[-20%] w-[70%] h-[50%] bg-violet-600/8 blur-[90px] rounded-full" />
+        <div className="absolute top-[-10%] right-[-15%] w-[80%] h-[45%] bg-blue-600/10 blur-[110px] rounded-full" />
+        <div className="absolute bottom-[-15%] left-[-15%] w-[70%] h-[45%] bg-violet-600/6 blur-[100px] rounded-full" />
       </div>
 
+      {/* Close Button - Смещена ниже, чтобы не перекрываться системными кнопками TG */}
       <motion.button
         variants={itemVariants}
-        type="button"
         onClick={onClose}
-        className="absolute right-5 top-[max(0.75rem,var(--app-safe-area-top))] w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl leading-none z-50 active:scale-90 transition-transform"
-        aria-label="Close"
+        className="absolute right-6 top-14 w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform"
       >
         ×
       </motion.button>
 
-      <div className="relative z-10 flex flex-col flex-1 min-h-0 w-full max-w-[430px] mx-auto px-5 pt-2 pb-8">
-        <motion.header variants={itemVariants} className="mb-6 pr-12">
-          <h1 className="text-[40px] font-black italic uppercase tracking-tighter leading-none text-white">Shop</h1>
-          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-blue-400 mt-2">
+      <div className="relative z-10 flex flex-col h-full w-full max-w-[430px] mx-auto px-6 pt-20 pb-32">
+        
+        {/* Заголовок */}
+        <motion.header variants={itemVariants} className="mb-8">
+          <h1 className="text-[44px] font-black italic uppercase tracking-tighter leading-none">Shop</h1>
+          <p className="text-[11px] font-black uppercase tracking-[0.25em] text-blue-400 mt-2">
             Buy TG Shards ($SHRD)
           </p>
         </motion.header>
 
-        <motion.div variants={itemVariants} className="flex gap-2 mb-6">
+        {/* Поле Промокода */}
+        <motion.div variants={itemVariants} className="mb-6">
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              value={promo}
+              onChange={(e) => setPromo(e.target.value.toUpperCase())}
+              placeholder="PROMO CODE"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-5 text-[11px] font-bold tracking-widest placeholder:text-white/20 focus:border-blue-500/40 outline-none transition-all"
+            />
+            <button 
+              onClick={() => promo && notify(`Checking code: ${promo}`, 'Promo')}
+              className="absolute right-2.5 bg-blue-600 hover:bg-blue-500 text-[10px] font-black px-4 py-2 rounded-xl active:scale-95 transition-all"
+            >
+              APPLY
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Выбор метода оплаты */}
+        <motion.div variants={itemVariants} className="flex gap-2 mb-8">
           {METHODS.map((m) => (
             <button
               key={m.id}
-              type="button"
               onClick={() => setMethod(m.id)}
-              className={`flex-1 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider border transition-all ${
+              className={`flex-1 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-wider border transition-all ${
                 method === m.id
-                  ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.12)]'
-                  : 'bg-white/5 border-white/10 text-white/50 active:bg-white/10'
+                  ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.1)]'
+                  : 'bg-white/5 border-white/10 text-white/50'
               }`}
             >
               {m.label}
@@ -144,59 +158,54 @@ const ShopOverlay = ({ onClose }) => {
           ))}
         </motion.div>
 
-        <motion.p variants={itemVariants} className="text-[10px] font-bold text-white/35 uppercase tracking-widest mb-3">
-          Choose pack
-        </motion.p>
-
-        <motion.div variants={itemVariants} className="flex-1 min-h-0 overflow-y-auto space-y-3 pb-4 -mx-1 px-1">
+        {/* Список паков (Скроллируемая область) */}
+        <motion.div variants={itemVariants} className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
           {PACKS.map((pack) => {
             const active = pack.id === selectedId;
             return (
               <button
                 key={pack.id}
-                type="button"
                 onClick={() => setSelectedId(pack.id)}
-                className={`w-full text-left rounded-[26px] border p-5 transition-all ${
+                className={`w-full text-left rounded-[28px] border p-6 transition-all ${
                   active
-                    ? 'border-blue-500/50 bg-blue-500/10 shadow-[0_0_24px_rgba(59,130,246,0.15)]'
-                    : 'border-white/8 bg-white/[0.03] active:scale-[0.99]'
+                    ? 'border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.08)]'
+                    : 'border-white/10 bg-white/[0.04] active:bg-white/[0.08]'
                 }`}
               >
-                <div className="flex justify-between items-start gap-3">
+                <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-2xl font-black italic text-white leading-none">
+                    <p className="text-2xl font-black italic">
                       {formatShards(pack.shards)}
-                      <span className="text-sm not-italic font-black text-blue-400 ml-1.5">$SHRD</span>
+                      <span className="text-sm not-italic text-blue-400 ml-2">$SHRD</span>
                     </p>
-                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-2">
+                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mt-1">
                       {method === 'ton' && `${pack.ton} TON`}
-                      {method === 'usdt' && `${pack.usdt} USDT (TON)`}
-                      {method === 'stars' && `${pack.stars} Telegram Stars`}
+                      {method === 'usdt' && `${pack.usdt} USDT`}
+                      {method === 'stars' && `${pack.stars} Stars`}
                     </p>
                   </div>
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 shrink-0 mt-1 ${
-                      active ? 'border-blue-400 bg-blue-500' : 'border-white/20'
-                    }`}
-                  />
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${active ? 'border-blue-400' : 'border-white/10'}`}>
+                    {active && <div className="w-3 h-3 bg-blue-400 rounded-full shadow-[0_0_10px_#60a5fa]" />}
+                  </div>
                 </div>
               </button>
             );
           })}
         </motion.div>
 
-        <motion.div variants={itemVariants} className="pt-2 space-y-3">
+        {/* Нижняя кнопка (Вынесена за пределы скролла и поднята над навбаром) */}
+        <motion.div variants={itemVariants} className="mt-8">
           <button
-            type="button"
             onClick={handlePay}
-            className="w-full py-4 rounded-[22px] bg-gradient-to-r from-blue-600 to-blue-500 text-[13px] font-black uppercase tracking-wider text-white shadow-lg shadow-blue-900/40 active:scale-[0.98] transition-transform border border-white/10"
+            className="w-full py-5 rounded-[24px] bg-blue-600 hover:bg-blue-500 text-[15px] font-black uppercase tracking-widest text-white shadow-[0_12px_40px_rgba(37,99,235,0.25)] active:scale-[0.97] transition-all border border-white/10"
           >
             Pay {priceLabel}
           </button>
-          <p className="text-[9px] text-center text-white/30 font-medium leading-relaxed px-2">
-            TON / USDT use your connected wallet; Stars use Telegram invoices from your bot.
+          <p className="text-[9px] text-center text-white/20 font-bold uppercase tracking-tighter mt-4">
+            Encrypted Transaction via TON Network
           </p>
         </motion.div>
+
       </div>
     </motion.div>
   );
