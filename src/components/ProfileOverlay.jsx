@@ -1,15 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ProfileOverlay = ({ isOpen, onClose, userData }) => {
-  // В теории userData прилетает из Telegram (имя, аватарка)
   const username = userData?.first_name || "CRYPTO_KING";
   const level = 12;
-  const xpProgress = 65; // Процент до следующего уровня
+  const xpProgress = 65;
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -22,21 +22,31 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 20, stiffness: 150 }}
+            transition={{ type: 'spring', damping: 22, stiffness: 150 }}
             style={{
-              paddingTop: 'max(1.5rem, var(--app-safe-area-top))',
+              // Увеличили отступ сверху до 5rem (80px), чтобы контент был ниже кнопок TG
+              paddingTop: 'max(5rem, var(--app-safe-area-top))',
               paddingBottom: 'max(2.75rem, calc(env(safe-area-inset-bottom, 0px) + 2rem))',
             }}
             className="absolute right-0 top-0 h-full w-full max-w-[380px] z-[70]
                        bg-gradient-to-b from-[#12141c] to-[#08090d] border-l border-white/10 px-8
                        flex flex-col gap-6 shadow-2xl"
           >
+            {/* КРЕСТИК: Теперь точно такой же, как в ShopOverlay */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              onClick={onClose}
+              className="absolute right-6 top-14 w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform text-white/70"
+            >
+              ×
+            </motion.button>
+
             {/* 1. ШАПКА: Юзернейм и Уровень */}
-            <div className="relative pt-1">
+            <div className="relative pt-4"> {/* Добавили pt-4 для дополнительного спуска */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 p-[2px] shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                   <div className="w-full h-full rounded-[22px] bg-[#0d0f14] flex items-center justify-center overflow-hidden">
-                    {/* Сюда аватарку из ТГ */}
                     <span className="text-2xl font-black italic text-white">{username[0]}</span>
                   </div>
                 </div>
@@ -58,7 +68,7 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
               </div>
             </div>
 
-            {/* 2. БАЛАНС: Жирная плашка */}
+            {/* 2. БАЛАНС */}
             <div className="p-6 rounded-[32px] bg-gradient-to-br from-white/10 to-transparent border border-white/10 relative overflow-hidden group">
               <div className="absolute right-[-10%] top-[-20%] w-32 h-32 bg-blue-500/10 blur-[40px] group-hover:bg-blue-500/20 transition-all" />
               <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-1 block">Total Shards</span>
@@ -68,7 +78,7 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
               </div>
             </div>
 
-            {/* 3. ДОСТИЖЕНИЯ: Сетка 2х2 */}
+            {/* 3. ДОСТИЖЕНИЯ */}
             <div className="space-y-4">
               <div className="flex justify-between items-end px-1">
                 <h4 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">Achievements</h4>
@@ -82,14 +92,14 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
                   { label: "LOCKED", title: "High Roller", color: "gray" }
                 ].map((ach, i) => (
                   <div key={i} className={`p-4 rounded-3xl bg-white/5 border border-white/5 ${ach.color === 'gray' ? 'opacity-30' : ''}`}>
-                    <span className={`block text-[8px] font-black italic uppercase text-${ach.color}-400 mb-1`}>{ach.label}</span>
+                    <span className={`block text-[8px] font-black italic uppercase mb-1 ${ach.color === 'blue' ? 'text-blue-400' : ach.color === 'purple' ? 'text-purple-400' : 'text-cyan-400'}`}>{ach.label}</span>
                     <span className="text-[11px] text-white font-bold uppercase tracking-tight leading-none">{ach.title}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* 4. ЗАМЕНА КАСТОМИЗАЦИИ: Daily Quests */}
+            {/* 4. DAILY QUESTS */}
             <div className="mt-auto pb-10">
               <div className="p-5 rounded-[32px] bg-blue-500/5 border border-blue-500/20">
                 <div className="flex justify-between items-center mb-4">
@@ -104,13 +114,6 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
               </div>
             </div>
 
-            <button
-              onClick={onClose}
-              style={{ top: 'max(1.25rem, var(--app-safe-area-top))', right: '1.5rem' }}
-              className="absolute text-white/20 hover:text-white transition-colors uppercase text-[10px] font-black tracking-widest italic"
-            >
-              Close [x]
-            </button>
           </motion.div>
         </>
       )}
