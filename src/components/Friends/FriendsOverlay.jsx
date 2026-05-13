@@ -32,18 +32,19 @@ const FriendsOverlay = ({ onClose }) => {
         <div className="absolute top-[-10%] left-[-20%] w-[70%] h-[70%] bg-blue-600/5 blur-[120px] rounded-full" />
       </div>
 
-      {/* Кнопка закрытия */}
+      {/* ПУНКТ 1: Кнопка закрытия (опущена на top-24) */}
       <motion.button
         variants={itemVariants}
         onClick={onClose}
-        className="absolute right-6 top-[max(1rem,var(--app-safe-area-top))] w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform"
+        className="absolute right-6 top-24 w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform text-white/70 backdrop-blur-xl"
       >
         ×
       </motion.button>
 
-      <div className="relative z-10 w-full px-6 flex flex-col">
+      {/* ПУНКТ 2: Отступ контента сверху (добавил pt-20 и mb-8 pt-4) */}
+      <div className="relative z-10 w-full px-6 flex flex-col pt-20">
         {/* Заголовок */}
-        <motion.header variants={itemVariants} className="mb-8">
+        <motion.header variants={itemVariants} className="mb-8 pt-4">
           <h1 className="text-[44px] font-black italic uppercase tracking-tighter leading-none text-white">
             Friends
           </h1>
@@ -93,7 +94,7 @@ const FriendsOverlay = ({ onClose }) => {
         </motion.div>
       </div>
 
-      {/* Кнопка приглашения — УМЕНЬШЕННАЯ */}
+      {/* ПУНКТ 3 НЕ ТРОГАЛ: Кнопка остается как была в твоем исходнике (fixed) */}
       <motion.div
         variants={itemVariants}
         className="fixed bottom-32 left-0 w-full px-10 z-50"
