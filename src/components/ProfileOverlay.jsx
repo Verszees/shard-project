@@ -24,26 +24,26 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 22, stiffness: 150 }}
             style={{
-              // Увеличили отступ сверху до 5rem (80px), чтобы контент был ниже кнопок TG
-              paddingTop: 'max(5rem, var(--app-safe-area-top))',
+              // Опустили начало контента еще ниже (6rem ~ 96px)
+              paddingTop: 'max(6rem, var(--app-safe-area-top))',
               paddingBottom: 'max(2.75rem, calc(env(safe-area-inset-bottom, 0px) + 2rem))',
             }}
             className="absolute right-0 top-0 h-full w-full max-w-[380px] z-[70]
                        bg-gradient-to-b from-[#12141c] to-[#08090d] border-l border-white/10 px-8
                        flex flex-col gap-6 shadow-2xl"
           >
-            {/* КРЕСТИК: Теперь точно такой же, как в ShopOverlay */}
+            {/* КРЕСТИК: Опустил на top-24 (это примерно 96px от верха) */}
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               onClick={onClose}
-              className="absolute right-6 top-14 w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform text-white/70"
+              className="absolute right-6 top-24 w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-2xl z-50 active:scale-90 transition-transform text-white/70 backdrop-blur-xl"
             >
               ×
             </motion.button>
 
             {/* 1. ШАПКА: Юзернейм и Уровень */}
-            <div className="relative pt-4"> {/* Добавили pt-4 для дополнительного спуска */}
+            <div className="relative"> 
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 p-[2px] shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                   <div className="w-full h-full rounded-[22px] bg-[#0d0f14] flex items-center justify-center overflow-hidden">
@@ -82,17 +82,17 @@ const ProfileOverlay = ({ isOpen, onClose, userData }) => {
             <div className="space-y-4">
               <div className="flex justify-between items-end px-1">
                 <h4 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">Achievements</h4>
-                <span className="text-[9px] font-bold text-blue-500/60 uppercase">View All</span>
+                <span className="text-[9px] font-bold text-blue-500/60 uppercase cursor-pointer">View All</span>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Top 1%", title: "Shards Master", color: "blue" },
-                  { label: "Win Streak", title: "7 Games", color: "purple" },
-                  { label: "Explorer", title: "All Games", color: "cyan" },
-                  { label: "LOCKED", title: "High Roller", color: "gray" }
+                  { label: "Top 1%", title: "Shards Master", color: "text-blue-400" },
+                  { label: "Win Streak", title: "7 Games", color: "text-purple-400" },
+                  { label: "Explorer", title: "All Games", color: "text-cyan-400" },
+                  { label: "LOCKED", title: "High Roller", color: "text-white/20" }
                 ].map((ach, i) => (
-                  <div key={i} className={`p-4 rounded-3xl bg-white/5 border border-white/5 ${ach.color === 'gray' ? 'opacity-30' : ''}`}>
-                    <span className={`block text-[8px] font-black italic uppercase mb-1 ${ach.color === 'blue' ? 'text-blue-400' : ach.color === 'purple' ? 'text-purple-400' : 'text-cyan-400'}`}>{ach.label}</span>
+                  <div key={i} className={`p-4 rounded-3xl bg-white/5 border border-white/5 ${ach.title === 'High Roller' ? 'opacity-30' : ''}`}>
+                    <span className={`block text-[8px] font-black italic uppercase mb-1 ${ach.color}`}>{ach.label}</span>
                     <span className="text-[11px] text-white font-bold uppercase tracking-tight leading-none">{ach.title}</span>
                   </div>
                 ))}
