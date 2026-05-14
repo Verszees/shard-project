@@ -18,8 +18,8 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    const baseZ = compact ? -0.4 : -0.5;
-    const homeY = compact ? 0.15 : 0.22;
+    const baseZ = compact ? -0.38 : -1.2;
+    const homeY = compact ? 0.1 : 0.38 + (scrollY.current * 0.001);
 
     let targetY;
     if (isHubOpen) {
@@ -47,12 +47,12 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
     groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, t);
   });
 
-  const hitScale = compact ? [0.74, 1.55, 0.74] : [1.3, 3, 1.3];
-  const sphereScale = compact ? 2.0 : 4.8;
+  const hitScale = compact ? [0.82, 1.72, 0.82] : [1.3, 3, 1.3];
+  const sphereScale = compact ? 1.72 : 3.05;
 
   return (
     <group ref={groupRef}>
-      <Float speed={compact ? 1.2 : 1.5} rotationIntensity={compact ? 0.25 : 0.4} floatIntensity={compact ? 0.28 : 0.4}>
+      <Float speed={compact ? 1.15 : 1.5} rotationIntensity={compact ? 0.22 : 0.4} floatIntensity={compact ? 0.2 : 0.4}>
         <mesh
           scale={hitScale}
           onPointerDown={(e) => {
@@ -72,19 +72,26 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
 };
 
 const Scene = memo(({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, compact }) => {
-  const cam = compact
-    ? { position: [0, 0.08, 3.72], fov: 41 }
-    : { position: [0, 0.42, 6.25], fov: 40 };
+  const defaultCam = { position: [0, 0.42, 6.25], fov: 40 };
 
   return (
     <div className="w-full h-full pointer-events-auto overflow-visible touch-none">
       <Canvas
         shadows={false}
-        dpr={compact ? [1, 1.5] : [1, 2]}
-        camera={{ position: cam.position, fov: cam.fov }}
+        dpr={compact ? [1, 2] : [1, 2]}
+        camera={compact ? { fov: 42, near: 0.1, far: 100 } : defaultCam}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        onCreated={({ camera }) => camera.lookAt(0, 0, 0)}
-        style={{ overflow: 'visible' }}
+        onCreated={({ camera }) => {
+          if (compact) {
+            camera.position.set(0, 0.08, 3.38);
+            camera.lookAt(0, -0.22, 0);
+          } else {
+            camera.position.set(0, 0.42, 6.25);
+            camera.lookAt(0, 0, 0);
+          }
+          camera.updateProjectionMatrix?.();
+        }}
+        style={{ overflow: 'visible', width: '100%', height: '100%' }}
       >
         <AdaptiveDpr />
         <AdaptiveEvents />

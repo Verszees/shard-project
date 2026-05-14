@@ -80,12 +80,10 @@ export default function App() {
                   </div>
 
                   {appReady && (
-                    <div className="w-full max-w-[430px] mx-auto flex-1 flex flex-col min-h-0 px-5 pb-[max(13.5rem,calc(env(safe-area-inset-bottom,0px)+11.75rem))] overflow-y-auto overflow-x-hidden">
-                      <div className="relative shrink-0">
-                        {/* Кристалл: выше, в «узком» вертикальном слоте между шапкой и карточками */}
-                        <div
-                          className="absolute left-1/2 -top-14 z-[15] w-[min(40vw,168px)] h-[198px] -translate-x-1/2 pointer-events-auto"
-                        >
+                    <div className="w-full max-w-[430px] mx-auto flex flex-1 flex-col min-h-0 px-5 overflow-x-hidden overflow-y-visible">
+                      {/* Кристалл вне скролла карточек — верх не режется overflow */}
+                      <div className="relative z-[25] flex shrink-0 justify-center overflow-visible pt-2 pb-3 min-h-[min(240px,30vh)]">
+                        <div className="w-[min(78vw,268px)] h-[min(248px,34vh)] max-h-[280px] overflow-visible">
                           <Scene
                             compact
                             isLoading={false}
@@ -94,11 +92,13 @@ export default function App() {
                             isHubOpen={false}
                           />
                         </div>
+                      </div>
+                      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-[max(14.5rem,calc(env(safe-area-inset-bottom,0px)+12.25rem))]">
                         <motion.div
                           initial={{ opacity: 0, y: 28 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-                          className="space-y-3.5 pt-[146px]"
+                          className="space-y-3.5"
                         >
                           <CollectionCard
                             isInventoryOpen={isInventoryOpen}
