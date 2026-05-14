@@ -48,7 +48,7 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
   });
 
   const hitScale = compact ? [0.74, 1.55, 0.74] : [1.3, 3, 1.3];
-  const sphereScale = compact ? 1.52 : 3.05;
+  const sphereScale = compact ? 1.52 : 5.05;
 
   return (
     <group ref={groupRef}>
