@@ -47,8 +47,8 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
     groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, t);
   });
 
-  const hitScale = compact ? [0.68, 1.45, 0.68] : [1.3, 3, 1.3];
-  const sphereScale = compact ? 1.38 : 3.05;
+  const hitScale = compact ? [0.74, 1.55, 0.74] : [1.3, 3, 1.3];
+  const sphereScale = compact ? 1.52 : 3.05;
 
   return (
     <group ref={groupRef}>
@@ -73,7 +73,7 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
 
 const Scene = memo(({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, compact }) => {
   const cam = compact
-    ? { position: [0, 0.1, 3.95], fov: 40 }
+    ? { position: [0, 0.08, 3.72], fov: 41 }
     : { position: [0, 0.42, 6.25], fov: 40 };
 
   return (
