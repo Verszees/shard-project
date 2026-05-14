@@ -32,7 +32,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen text-white font-sans selection:bg-transparent relative select-none antialiased bg-black overflow-x-hidden">
+    <div className="min-h-screen text-white font-sans selection:bg-transparent relative select-none antialiased bg-[#050508] overflow-x-hidden">
       <style>{`
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .ios-blur { backdrop-filter: blur(25px) saturate(160%); -webkit-backdrop-filter: blur(25px) saturate(160%); }
@@ -82,8 +82,9 @@ export default function App() {
                   {appReady && (
                     <div className="w-full max-w-[430px] mx-auto flex-1 flex flex-col min-h-0 px-5 pb-44 overflow-y-auto overflow-x-hidden">
                       <div className="relative shrink-0">
+                        {/* Кристалл: по центру между шапкой и карточками (как пометка), чуть крупнее */}
                         <div
-                          className="absolute right-0 top-0 z-[15] w-[min(38vw,142px)] h-[118px] pointer-events-auto"
+                          className="absolute left-1/2 top-0 z-[15] w-[min(52vw,200px)] h-[148px] -translate-x-1/2 pointer-events-auto"
                         >
                           <Scene
                             compact
@@ -97,7 +98,7 @@ export default function App() {
                           initial={{ opacity: 0, y: 28 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-                          className="space-y-3.5 pt-[100px]"
+                          className="space-y-3.5 pt-[132px]"
                         >
                           <CollectionCard
                             isInventoryOpen={isInventoryOpen}
