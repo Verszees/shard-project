@@ -4,7 +4,7 @@ import { Float, Environment, AdaptiveDpr, AdaptiveEvents } from '@react-three/dr
 import * as THREE from 'three';
 import ShardSphere from './ShardSphere';
 
-const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) => {
+const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, compact }) => {
   const groupRef = useRef();
   const scrollY = useRef(0);
   const isFirstRender = useRef(true);
@@ -18,23 +18,20 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) 
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    // Твои базовые параметры
-    const baseZ = -1.2;
-    const homeY = 0.38 + (scrollY.current * 0.001);
+    const baseZ = compact ? -0.85 : -1.2;
+    const homeY = compact ? 0.08 : 0.38 + (scrollY.current * 0.001);
 
-    // Определяем цель по Y (фиксим обрезку и центрируем в хабе)
     let targetY;
     if (isHubOpen) {
       targetY = 0;
     } else if (isProfileOpen) {
       targetY = 0.5;
-    } else if (isLoading) {
-      targetY = -0.5; // Твой фикс, чтобы сферы и низ не резало
+    } else if (isLoading && !compact) {
+      targetY = -0.5;
     } else {
       targetY = homeY;
     }
 
-    // Твой плавный переход по Z (в хабе чуть дальше, чтобы всё влезло)
     const targetZ = isHubOpen ? -2.2 : (isProfileOpen ? -0.8 : baseZ);
 
     if (isFirstRender.current) {
@@ -50,14 +47,16 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) 
     groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, t);
   });
 
+  const hitScale = compact ? [0.55, 1.2, 0.55] : [1.3, 3, 1.3];
+  const sphereScale = compact ? 1.12 : 3.05;
+
   return (
     <group ref={groupRef}>
-      <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.4}>
-        {/* Твой настроенный меш для клика */}
+      <Float speed={compact ? 1.2 : 1.5} rotationIntensity={compact ? 0.25 : 0.4} floatIntensity={compact ? 0.28 : 0.4}>
         <mesh
-          scale={[1.3, 3, 1.3]}
+          scale={hitScale}
           onPointerDown={(e) => {
-            if (isHubOpen || isLoading) return;
+            if (isHubOpen || (isLoading && !compact)) return;
             e.stopPropagation();
             onCrystalClick();
           }}
@@ -66,28 +65,31 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) 
           <meshBasicMaterial transparent opacity={0} />
         </mesh>
 
-        {/* ТВОИ СФЕРЫ С РОДНЫМ СКЕЙЛОМ */}
-        <ShardSphere position={[0, 0, 0]} scale={3.05} />
+        <ShardSphere position={[0, 0, 0]} scale={sphereScale} />
       </Float>
     </group>
   );
 };
 
-const Scene = memo(({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) => {
+const Scene = memo(({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, compact }) => {
+  const cam = compact
+    ? { position: [0, 0.12, 4.35], fov: 38 }
+    : { position: [0, 0.42, 6.25], fov: 40 };
+
   return (
-    <div className="w-full h-full pointer-events-auto overflow-visible">
+    <div className="w-full h-full pointer-events-auto overflow-visible touch-none">
       <Canvas
         shadows={false}
-        dpr={[1, 2]}
-        camera={{ position: [0, 0.42, 6.25], fov: 40 }}
+        dpr={compact ? [1, 1.5] : [1, 2]}
+        camera={{ position: cam.position, fov: cam.fov }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         onCreated={({ camera }) => camera.lookAt(0, 0, 0)}
         style={{ overflow: 'visible' }}
       >
         <AdaptiveDpr />
         <AdaptiveEvents />
-        <ambientLight intensity={0.6} />
-        <pointLight position={[5, 5, 5]} intensity={1.5} />
+        <ambientLight intensity={compact ? 0.55 : 0.6} />
+        <pointLight position={[5, 5, 5]} intensity={compact ? 1.35 : 1.5} />
         <Suspense fallback={null}>
           <Environment preset="night" />
           <MovingContent
@@ -95,6 +97,7 @@ const Scene = memo(({ isLoading, onCrystalClick, isProfileOpen, isHubOpen }) => 
             onCrystalClick={onCrystalClick}
             isProfileOpen={isProfileOpen}
             isHubOpen={isHubOpen}
+            compact={compact}
           />
         </Suspense>
       </Canvas>

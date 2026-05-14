@@ -18,8 +18,7 @@ import FriendsCard from './components/Cards/FriendsCard';
 import HubCard from './components/Cards/HubCard';
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [showContent, setShowContent] = useState(false);
+  const [appReady, setAppReady] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isHubOpen, setIsHubOpen] = useState(false);
   const [isGamesOpen, setIsGamesOpen] = useState(false);
@@ -28,14 +27,8 @@ export default function App() {
   const [isShopOpen, setIsShopOpen] = useState(false);
 
   useEffect(() => {
-    const loadTimer = setTimeout(() => {
-      setIsLoading(false);
-      const contentTimer = setTimeout(() => {
-        setShowContent(true);
-      }, 1100);
-      return () => clearTimeout(contentTimer);
-    }, 2500);
-    return () => clearTimeout(loadTimer);
+    const t = setTimeout(() => setAppReady(true), 720);
+    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -47,17 +40,29 @@ export default function App() {
 
       <Background />
 
-      <div className="relative z-10 w-full flex flex-col items-center">
+      <AnimatePresence>
+        {!appReady && (
+          <motion.div
+            key="boot-splash"
+            className="fixed inset-0 z-[500] bg-black"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="relative z-10 w-full flex flex-col items-center min-h-[100dvh]">
         <AnimatePresence mode="wait">
           {/* Рендерим главный экран только если НЕ открыты другие полноэкранные разделы */}
-          {!isHubOpen && !isGamesOpen && !isFriendsOpen && !isInventoryOpen && !isShopOpen ? (
+          {!isHubOpen && !isGamesOpen && !isFriendsOpen && !isShopOpen ? (
             <motion.div
               key="main-screen"
-              className="w-full flex flex-col items-center"
+              className="w-full flex flex-col flex-1 min-h-0 items-stretch"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: appReady ? 1 : 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.35 }}
             >
               {!isProfileOpen && (
                 <>
@@ -66,42 +71,34 @@ export default function App() {
                     style={{ minHeight: 'var(--app-header-slot-min, calc(var(--app-safe-area-top) + 3rem))' }}
                   >
                     <AnimatePresence>
-                      {/* Скрываем Header (Links/Connect) если открыт инвентарь */}
-                      {showContent && !isInventoryOpen && (
-                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+                      {appReady && !isInventoryOpen && (
+                        <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
                           <Header />
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
 
-                  <div className="w-full h-[75vh] flex items-center justify-center relative z-[5] overflow-visible pointer-events-none">
-                    <div className="w-full h-full pointer-events-auto">
-                      <motion.div
-                        className="w-full h-full"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1 }}
-                      >
-                        <Scene
-                          isLoading={isLoading}
-                          onCrystalClick={() => setIsProfileOpen(true)}
-                          isProfileOpen={isProfileOpen}
-                          isHubOpen={false}
-                        />
-                      </motion.div>
-                    </div>
-                  </div>
-
-                  <AnimatePresence>
-                    {showContent && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="px-5 w-full max-w-[430px] mt-[-15vh] pb-44 relative z-20"
-                      >
-                        <div className="space-y-3.5">
+                  {appReady && (
+                    <div className="w-full max-w-[430px] mx-auto flex-1 flex flex-col min-h-0 px-5 pb-44 overflow-y-auto overflow-x-hidden">
+                      <div className="relative shrink-0">
+                        <div
+                          className="absolute right-0 top-0 z-[15] w-[min(38vw,142px)] h-[118px] pointer-events-auto"
+                        >
+                          <Scene
+                            compact
+                            isLoading={false}
+                            onCrystalClick={() => setIsProfileOpen(true)}
+                            isProfileOpen={isProfileOpen}
+                            isHubOpen={false}
+                          />
+                        </div>
+                        <motion.div
+                          initial={{ opacity: 0, y: 28 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+                          className="space-y-3.5 pt-[100px]"
+                        >
                           <CollectionCard
                             isInventoryOpen={isInventoryOpen}
                             setIsInventoryOpen={setIsInventoryOpen}
@@ -112,10 +109,10 @@ export default function App() {
                             <FriendsCard onClick={() => setIsFriendsOpen(true)} />
                           </div>
                           <HubCard onClick={() => setIsHubOpen(true)} />
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        </motion.div>
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
             </motion.div>
@@ -183,7 +180,7 @@ export default function App() {
         onClose={() => setIsInventoryOpen(false)}
       />
 
-      {showContent && !isProfileOpen && !isInventoryOpen && (
+      {appReady && !isProfileOpen && !isInventoryOpen && (
         <Navbar
           onHubClick={() => { setIsHubOpen(true); setIsGamesOpen(false); setIsFriendsOpen(false); setIsShopOpen(false); }}
           onHomeClick={() => { setIsHubOpen(false); setIsGamesOpen(false); setIsFriendsOpen(false); setIsShopOpen(false); }}
