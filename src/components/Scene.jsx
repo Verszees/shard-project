@@ -18,8 +18,8 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    const baseZ = compact ? -0.92 : -1.2;
-    const homeY = compact ? 0.06 : 0.38 + (scrollY.current * 0.001);
+    const baseZ = compact ? -0.4 : -0.5;
+    const homeY = compact ? 0.15 : 0.22;
 
     let targetY;
     if (isHubOpen) {
@@ -48,7 +48,7 @@ const MovingContent = ({ isLoading, onCrystalClick, isProfileOpen, isHubOpen, co
   });
 
   const hitScale = compact ? [0.74, 1.55, 0.74] : [1.3, 3, 1.3];
-  const sphereScale = compact ? 1.52 : 5.05;
+  const sphereScale = compact ? 2.0 : 4.8;
 
   return (
     <group ref={groupRef}>
