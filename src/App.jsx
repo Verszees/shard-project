@@ -8,7 +8,7 @@ import ProfileOverlay from './components/ProfileOverlay';
 import HubOverlay from './components/Hub/HubOverlay';
 import GamesOverlay from './components/Games/GamesOverlay';
 import FriendsOverlay from './components/Friends/FriendsOverlay';
-import InventoryOverlay from './components/Collection/InventoryOverlay'; // Импорт нового инвентаря
+import InventoryOverlay from './components/Collection/InventoryOverlay'; // Імпорт нового інвентаря
 
 import CollectionCard from './components/Cards/CollectionCard';
 import GameCard from './components/Cards/GameCard';
@@ -54,7 +54,7 @@ export default function App() {
 
       <div className="relative z-10 w-full flex flex-col items-center min-h-[100dvh]">
         <AnimatePresence mode="wait">
-          {/* Рендерим главный экран только если НЕ открыты другие полноэкранные разделы */}
+          {/* Рендерим головний екран тільки якщо НЕ відкрити інші повноекранні розділи */}
           {!isHubOpen && !isGamesOpen && !isFriendsOpen && !isShopOpen ? (
             <motion.div
               key="main-screen"
@@ -81,9 +81,9 @@ export default function App() {
 
                   {appReady && (
                     <div className="w-full max-w-[430px] mx-auto flex flex-1 flex-col min-h-0 px-5 overflow-x-hidden overflow-y-visible">
-                      {/* Кристалл вне скролла карточек — верх не режется overflow */}
-                      <div className="relative z-[25] flex shrink-0 justify-center overflow-visible pt-2 pb-3 min-h-[min(240px,30vh)]">
-                        <div className="w-[min(78vw,268px)] h-[min(248px,34vh)] max-h-[280px] overflow-visible">
+                      {/* Кристал вне скролла карточок — верх не різається overflow */}
+                      <div className="relative z-[25] flex shrink-0 justify-center overflow-visible pt-2 pb-1 min-h-[min(200px,22vh)]">
+                        <div className="w-[min(78vw,268px)] h-[min(200px,28vh)] max-h-[220px] overflow-visible">
                           <Scene
                             compact
                             isLoading={false}
@@ -175,7 +175,7 @@ export default function App() {
         </AnimatePresence>
       </div>
 
-      {/* Инвентарь рендерится поверх всего */}
+      {/* Інвентар рендерується поверх всього */}
       <InventoryOverlay
         isOpen={isInventoryOpen}
         onClose={() => setIsInventoryOpen(false)}
